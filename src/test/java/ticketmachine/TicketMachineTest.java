@@ -29,5 +29,58 @@ public class TicketMachineTest {
 		machine.insertMoney(20);
 		assertEquals("La balance n'est pas correctement mise à jour", 10 + 20, machine.getBalance()); // Les montants ont été correctement additionnés               
 	}
+        
+        @Test
+        //S3 ne pas imprimer le tiquer si montant insuffisant
+        public void noImprimeSiNoMontant(){
+            
+            assertFalse("imprime un montant alors que ça devrais pas",machine.printTicket());
+        }
+        
+        @Test
+        //S4
+        public void imprimeSiMontant(){
+            machine.insertMoney(50);
+            assertTrue("imprime pas montant alors que ça devrais",machine.printTicket());
+        }
+        
+        @Test
+        //S5
+        public void decrementeBalance(){
+            machine.insertMoney(50);
+            machine.printTicket();
+            assertEquals("ne décrémente pas",0,machine.getBalance());
+        }
+        
+        @Test
+        //S6
+        public void majMontantCollecte(){
+            int a=machine.getTotal();
+            machine.insertMoney(50);
+            assertEquals(a,machine.getTotal());
+            machine.printTicket();
+            assertEquals(a+50,machine.getTotal());
+        }
+        
+        @Test
+        //S7 et S8
+        public void rendMoney(){
+            machine.insertMoney(20);
+            assertEquals(20,machine.refund());
+            assertEquals(0,machine.getBalance());
+        }
+        
+        @Test(expected=IllegalArgumentException.class)
+        //S9
+        public void montantNegatif(){
+            machine.insertMoney(-1);
+        }
+        
+        @Test(expected=IllegalArgumentException.class)
+        //S10
+        public void ticketsNegatif(){
+            machine = new TicketMachine(-1);
+        }
+        
 
 }
